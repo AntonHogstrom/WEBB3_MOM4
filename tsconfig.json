@@ -1,0 +1,12 @@
+{
+    "include": [
+        "src/typescript/*.ts"
+    ],
+    "compilerOptions": {
+        "outDir": "pub/js",
+        "outFile": "typescript.js",
+        "noImplicitAny": true,
+        "target": "es5",
+        "sourceMap": true,
+    }
+}

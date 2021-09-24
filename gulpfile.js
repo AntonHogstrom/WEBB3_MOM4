@@ -9,6 +9,8 @@ const imageMin = require('gulp-imagemin');
 const webp = require('gulp-webp');
 const sass = require('gulp-sass')(require('sass'));
 const babel = require('gulp-babel');
+const ts = require('gulp-typescript');
+const tsProject = ts.createProject('tsconfig.json');
 
 //src directories, targets all html, all css in scss folder, all js in js folder and everything in img folder.
 //img folder should only contain images...
@@ -16,12 +18,13 @@ const files = {
     htmlPath: "src/**/*.html",
     cssPath: "src/css/*.css",
     jsPath: "src/js/*.js",
+    tsPath: "src/typescript/*.ts",
     imgPath: "src/img/*",
     sassPath: "src/sass/**.scss"
 }
 
 //HTML-task, returns HTML-files from files.htmlPath and copy them over to destination pub (folder)
-function copyHTML() { 
+function htmlTask() { 
     return src(files.htmlPath)
     .pipe(htmlMin({ collapseWhitespace: true }))
     .pipe(dest('pub'));
@@ -30,14 +33,21 @@ function copyHTML() {
 //JS-task, initiates sourcemap, contatinate, minify JS-files, writes out sourcemap file, push files to pub (folder).
 function jsTask() {
     return src(files.jsPath)
-    .pipe(sourceMap.init())
-    .pipe(concat('main.js'))
     .pipe(babel({
         presets: ['@babel/env']
     }))
+    .pipe(sourceMap.init())
+    .pipe(concat('main.js'))
     .pipe(terser())
     .pipe(sourceMap.write('../maps'))
     .pipe(dest('pub/js'));
+}
+
+//TS-task
+function tsTask() {
+    return src(files.tsPath)
+    .pipe(tsProject())
+    .pipe(dest("pub/js"));
 }
 
 //SASS-task, returns the main sass-file, initiates sourcemap, cancatinates(for rename), compiles sass to css, compress, log errors, write sourcemap, send file to pub/css, update browser on css changes. 
@@ -74,16 +84,18 @@ function watchTask() {
     });
 
     watch(files.jsPath, jsTask).on('change', browserSync.reload);
-    watch(files.htmlPath, copyHTML).on('change', browserSync.reload);
+    watch(files.tsPath, tsTask).on('change', browserSync.reload);
+    watch(files.htmlPath, htmlTask).on('change', browserSync.reload);
     watch(files.sassPath, sassTask).on('change', browserSync.reload);
     watch(files.imgPath, imgTask).on('change', browserSync.reload);
     watch(files.imgPath, webpTask).on('change', browserSync.reload);
+
 }
 
 
 
 //gulp default exports.
 exports.default = series(
-    parallel(copyHTML, jsTask, sassTask, imgTask, webpTask),
+    parallel(htmlTask, tsTask, jsTask, sassTask, imgTask, webpTask),
     watchTask
 );
