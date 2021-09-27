@@ -1,7 +1,7 @@
 # >Webbutveckling 3
-## Moment 3, SASS
+## Moment 4, ECMA/TypeScript
 
-**This small project is my first assignment of using SASS**
+** Moment 3, but with added TypeScript **
 
 - HTML
 - SASS
@@ -9,6 +9,11 @@
 - NODEJS
 - NPM
 - GULP
+- TYPESCRIPT
+- ES16
+
+Moment4Examples mappen innehar kodexempel för ES6
+TypeScript finns i typescript-mappen i src.
 
 *console:*
 *To install dependencies:* npm install
