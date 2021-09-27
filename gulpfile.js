@@ -34,7 +34,7 @@ function htmlTask() {
 function jsTask() {
     return src(files.jsPath)
     .pipe(babel({
-        presets: ['@babel/env']
+        targets: {"ie": 11}
     }))
     .pipe(sourceMap.init())
     .pipe(concat('main.js'))
