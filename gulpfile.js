@@ -30,8 +30,8 @@ function htmlTask() {
     .pipe(dest('pub'));
 }
 
-//TS-task
-function tsTask() {
+//TS-task, returns TS-files, runs settings inside tsconfig.json file, sends to pub/js folder
+ function tsTask() {
     return src(files.tsPath)
     .pipe(tsProject())
     .pipe(dest("pub/js"));
