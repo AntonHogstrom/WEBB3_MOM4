@@ -30,6 +30,13 @@ function htmlTask() {
     .pipe(dest('pub'));
 }
 
+//TS-task
+function tsTask() {
+    return src(files.tsPath)
+    .pipe(tsProject())
+    .pipe(dest("pub/js"));
+}
+
 //JS-task, initiates sourcemap, contatinate, minify JS-files, writes out sourcemap file, push files to pub (folder).
 function jsTask() {
     return src(files.jsPath)
@@ -41,13 +48,6 @@ function jsTask() {
     .pipe(terser())
     .pipe(sourceMap.write('../maps'))
     .pipe(dest('pub/js'));
-}
-
-//TS-task
-function tsTask() {
-    return src(files.tsPath)
-    .pipe(tsProject())
-    .pipe(dest("pub/js"));
 }
 
 //SASS-task, returns the main sass-file, initiates sourcemap, cancatinates(for rename), compiles sass to css, compress, log errors, write sourcemap, send file to pub/css, update browser on css changes. 
@@ -83,8 +83,8 @@ function watchTask() {
         server: "./pub"
     });
 
-    watch(files.jsPath, jsTask).on('change', browserSync.reload);
     watch(files.tsPath, tsTask).on('change', browserSync.reload);
+    watch(files.jsPath, jsTask).on('change', browserSync.reload);
     watch(files.htmlPath, htmlTask).on('change', browserSync.reload);
     watch(files.sassPath, sassTask).on('change', browserSync.reload);
     watch(files.imgPath, imgTask).on('change', browserSync.reload);
